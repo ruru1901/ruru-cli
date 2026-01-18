@@ -39,22 +39,42 @@ def execute_hidden(command):
         print("\n🔐 Ruru needs sudo privileges:")
         subprocess.run(["sudo", "-v"]) 
 
-    spinner = itertools.cycle(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
+    spinner = spinning_cursor()
     print("\n🚀 RURU HAND: Executing task...")
     
-    process = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+    # We use a context manager to handle the process and capture errors
+    try:
+        # Start the process. stderr=subprocess.PIPE allows us to check for lock errors
+        process = subprocess.Popen(
+            shlex.split(command),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True
+        )
 
-    while process.poll() is None:
-        sys.stdout.write(f"\r{next(spinner)} Working... ")
-        sys.stdout.flush()
-        time.sleep(0.1)
-    
-    sys.stdout.write("\r✅ Done!          \n")
-    return "SUCCESS" if process.returncode == 0 else "FAILED"
+        while process.poll() is None:
+            sys.stdout.write(f"\r{next(spinner)} Working... ")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        
+        # Check for errors in the background
+        stdout, stderr = process.communicate()
+        
+        if process.returncode == 0:
+            sys.stdout.write("\r✅ Done! Installation successful.          \n")
+            return "SUCCESS"
+        else:
+            sys.stdout.write("\r❌ Task Failed!                          \n")
+            if "lock" in stderr.lower():
+                print("⚠️ Error: The package manager is locked by another process.")
+                print("Wait a moment or check if another update is running.")
+            else:
+                print(f"⚠️ Debug Info: {stderr.strip()}")
+            return "FAILED"
+
+    except Exception as e:
+        print(f"\r❌ Error: {str(e)}")
+        return "ERROR"
 
 # --- MENU-DRIVEN HISTORY ---
 def history_menu():
