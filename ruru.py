@@ -14,18 +14,22 @@ def ensure_logs():
     os.makedirs(LOG_DIR, exist_ok=True)
 
 # --- THE BRAIN (Gemini CLI) ---
-def ask_gemini(task, command):
+def ask_gemini(task, command_placeholder):
+    # Prompt now tells Gemini to provide the best command for the description
     prompt = f"""
-    You are an expert AI assistant for Linux config command-line tasks.
-    For the task of '{task}', generate a response following this template exactly:
+    You are an expert AI assistant for Linux. 
+    The user wants to: '{task}'
+    
+    1. Determine the best Linux command to achieve this.
+    2. Format your response exactly like this:
 
     Task Name: {task}
     Command:
-    1 {command} # Main task command
+    1 [Insert Command Here] # Command description
 
-    Function: Explain the overall purpose and outcome of this command sequence in a human-readable paragraph.
-    Risk Level: [Low, Mid, or High]
-    Why?: Brief direct explanation of risks.
+    Function: Explain exactly what this command does.
+    Risk Level: [Low/Mid/High]
+    Why?: Brief risk explanation.
     """
     try:
         output = subprocess.check_output(["gemini", prompt], stderr=subprocess.STDOUT, text=True)
@@ -114,30 +118,36 @@ def history_menu():
         else:
             print("Invalid choice.")
 
-def run_flow(task_name, full_cmd):
-    analysis = ask_gemini(task_name, full_cmd)
-    print("\n" + "="*60)
-    print(analysis)
-    print("="*60)
-    
-    if "Brain Offline" in analysis: return
+def check_cache(task_name):
+    # If this task was successful before, we can skip the AI wait
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r") as f:
+            if task_name in f.read():
+                return True
+    return False
 
-    confirm = input("\nDo you accept this proposal? (y/n): ").lower()
-    if confirm == 'y':
-        status = execute_hidden(full_cmd)
-        with open(LOG_FILE, "a") as f:
-            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] {task_name} | {status}\n")
-    else:
-        print("❌ Proposal rejected.")
+def run_flow(task_name, full_cmd):
+    # If it's a known task, give a "Fast Track" option
+    if check_cache(task_name):
+        fast_path = input(f"⚡ Ruru remembers '{task_name}'. Skip AI analysis? (y/n): ")
+        if fast_path.lower() == 'y':
+            execute_hidden(full_cmd)
+            return
+    
+    # Otherwise, proceed to AI Analysis...
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: ruru install <pkg> | ruru historia")
+        print("Usage: ruru <any task description> | ruru history")
         sys.exit(1)
 
-    cmd = sys.argv[1]
-    if cmd == "install" and len(sys.argv) > 2:
-        pkg = sys.argv[2]
-        run_flow(f"Install {pkg}", f"sudo apt-get install -y {pkg}")
-    elif cmd in ["historia", "history"]:
+    # 1. Check for the History Menu first
+    cmd_arg = sys.argv[1]
+    if cmd_arg in ["history", "historia"]:
         history_menu()
+        sys.exit(0)
+
+    # 2. Universal Routing: Treat all arguments as one big task
+    user_task = " ".join(sys.argv[1:])
+    
+    run_flow(user_task, f"GENERATE_COMMAND_FOR: {user_task}")
