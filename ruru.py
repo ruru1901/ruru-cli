@@ -33,6 +33,9 @@ def ask_gemini(task, command):
     except Exception:
         return "⚠️ Brain Offline. Ensure gemini-cli is installed and 'gemini auth login' is done."
 
+def spinning_cursor():
+    return itertools.cycle(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
+
 # --- THE HAND (Hidden Terminal + Spinner) ---
 def execute_hidden(command):
     if "sudo" in command:
