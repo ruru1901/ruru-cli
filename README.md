@@ -6,7 +6,7 @@ You must have Python 3 and the Gemini CLI installed:
 
 TO INSTALL GEMINI
 #refer gemini-cli installation
-=>pip install gemini-cli --break-system-packages`
+=>pip install gemini-cli --break-system-packages
 =>gemini auth login
 
 ## 2. Installation
