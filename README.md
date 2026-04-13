@@ -2,15 +2,11 @@
 An expert AI assistant for your terminal.
 
 ## 1. Prerequisites
-You must have Python 3 and set up an API key for your chosen AI backend (Groq or OpenRouter).
+You must have Python 3 and an API key for your chosen AI backend (Groq or OpenRouter). The installer will prompt for the key and show the export command.
 
-For Groq:
-- Sign up at https://groq.com
-- Get your API key and set it: `export GROQ_API_KEY=your_key_here`
+For Groq: Sign up at https://groq.com, get API key.
 
-For OpenRouter:
-- Sign up at https://openrouter.ai
-- Get your API key and set it: `export OPENROUTER_API_KEY=your_key_here`
+For OpenRouter: Sign up at https://openrouter.ai, get API key.
 
 ## 2. Installation
 IN TERMINAL

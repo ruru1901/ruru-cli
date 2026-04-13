@@ -24,13 +24,22 @@ def setup():
     if choice == "1":
         backend = "groq"
         model = input("Enter Groq model (default llama3-70b-8192): ").strip() or "llama3-70b-8192"
+        api_key = input("Enter your Groq API key: ").strip()
+        if api_key:
+            print(f"Please set the environment variable: export GROQ_API_KEY={api_key}")
         config = {"ai_backend": backend, "groq_model": model}
     elif choice == "2":
         backend = "openrouter"
         model = input("Enter OpenRouter model (default meta-llama/llama-3-70b-instruct): ").strip() or "meta-llama/llama-3-70b-instruct"
+        api_key = input("Enter your OpenRouter API key: ").strip()
+        if api_key:
+            print(f"Please set the environment variable: export OPENROUTER_API_KEY={api_key}")
         config = {"ai_backend": backend, "openrouter_model": model}
     else:
         print("Invalid choice, defaulting to Groq.")
+        api_key = input("Enter your Groq API key: ").strip()
+        if api_key:
+            print(f"Please set the environment variable: export GROQ_API_KEY={api_key}")
         config = {"ai_backend": "groq", "groq_model": "llama3-70b-8192"}
 
     with open(config_path, 'w') as f:
