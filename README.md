@@ -26,9 +26,21 @@ IN TERMINAL
 
   ruru install <package> - Install software with AI risk assessment.
 
-  ruru history - Access the interactive log menu.
+  ruru history - View command execution history in a table.
+
+  ruru history --clear - Clear the history log after confirmation.
+
+  ruru history --last N - Show the last N entries in history.
+
+  ruru undo - Reverse the last successfully executed command.
+
+  ruru switch - Change AI backend and model interactively.
+
+  ruru explain <command> - Get AI explanation of a Linux command.
 
   ruru init - Initialize or reconfigure AI backend settings.
+
+  ruru <task> --dry - Analyze and show command review without execution.
 
 
  What is Ruru-CLI?
