@@ -2,12 +2,15 @@
 An expert AI assistant for your terminal.
 
 ## 1. Prerequisites
-You must have Python 3 and the Gemini CLI installed:
+You must have Python 3 and set up an API key for your chosen AI backend (Groq or OpenRouter).
 
-TO INSTALL GEMINI
-#refer gemini-cli installation
-=>pip install gemini-cli --break-system-packages
-=>gemini auth login
+For Groq:
+- Sign up at https://groq.com
+- Get your API key and set it: `export GROQ_API_KEY=your_key_here`
+
+For OpenRouter:
+- Sign up at https://openrouter.ai
+- Get your API key and set it: `export OPENROUTER_API_KEY=your_key_here`
 
 ## 2. Installation
 IN TERMINAL
@@ -19,11 +22,13 @@ IN TERMINAL
 
 ## 3.Usage
 
-Commands
+ Commands
 
- ruru install <package> - Install software with AI risk assessment.
+  ruru install <package> - Install software with AI risk assessment.
 
- ruru history - Access the interactive log menu.
+  ruru history - Access the interactive log menu.
+
+  ruru init - Initialize or reconfigure AI backend settings.
 
 
  What is Ruru-CLI?
@@ -40,27 +45,27 @@ When first installed, a script called profiler.py runs to prepare the environmen
 
     Environment Mapping: It creates a dedicated directory structure (~/ruru1901/logs) to ensure all actions are audited.
 
+    Backend Configuration: Prompts user to select AI backend (Groq or OpenRouter) and model, saves settings to ~/.ruru/config.json.
+
     Self-Destruction: To keep the system clean, the profiler deletes its own source code after execution, leaving only the main application behind.
 
     Alias Integration: It injects a shortcut into the user's .bashrc file, allowing the user to simply type ruru from any directory.
 
 2. The Intelligence (The Brain)
 
-When you type a command like ruru install nmap, the "Brain" (powered by Gemini AI) is activated.
+When you type a command like ruru install nmap, the "Brain" (powered by Groq or OpenRouter AI) is activated.
 
     Structured Analysis: Instead of just running the command, Ruru sends the task to the AI to generate a risk assessment.
 
-    The Template: The AI is forced to respond using a specific template:
+    The Response: The AI responds with a JSON object containing:
 
-        Task Name: What is being done.
+        command: The exact Linux command to execute.
 
-        Command: The exact syntax to be used.
+        risk: Risk level (Low, Mid, or High).
 
-        Function: A human-readable explanation of the command's purpose.
+        explanation: Brief description of what the command does.
 
-        Risk Level: A categorization (Low, Mid, or High).
-
-        Why?: A technical justification for the risk level.
+        warning: Any risks or precautions.
 
 3. The Execution (The Hand)
 
@@ -77,7 +82,7 @@ Once the user reviews the AI's proposal and types y (Yes), the "Hand" takes over
 Key Features
 🛠️ Self-Healing Dependencies
 
-Ruru-CLI includes logic to detect if necessary Python libraries (like google-generativeai) are missing. On modern systems like Ubuntu 24.04 (Python 3.12+), it automatically bypasses environment restrictions using the --break-system-packages flag to ensure the tool stays functional.
+Ruru-CLI includes logic to detect if necessary Python libraries (like groq or requests) are missing. On modern systems like Ubuntu 24.04 (Python 3.12+), it automatically bypasses environment restrictions using the --break-system-packages flag to ensure the tool stays functional.
 📜 Menu-Driven History
 
 Instead of a simple text file, Ruru-CLI features an interactive, menu-driven archive. By typing ruru history, users can:

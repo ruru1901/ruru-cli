@@ -1,11 +1,14 @@
 #!/bin/bash
 # 1. Fix permissions immediately
-chmod +x ruru.py profiler.py
+chmod +x ruru.py profiler.py brain.py
 
-# 2. Run the self-deleting profiler
+# 2. Install dependencies
+pip install groq requests --break-system-packages
+
+# 3. Run the self-deleting profiler
 python3 profiler.py
 
-# 3. Create Alias (History and Historia both work)
+# 4. Create Alias (History and Historia both work)
 SCRIPT_PATH=$(pwd)/ruru.py
 ALIAS_LINE="alias ruru='python3 $SCRIPT_PATH'"
 if ! grep -q "alias ruru=" ~/.bashrc; then
